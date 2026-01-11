@@ -1,0 +1,66 @@
+/* src/components/FloatingPic/FloatingPic.css */
+.floating-pic-container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  padding-bottom: 300px;
+  margin-top: 100px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.floating-pic {
+  display: block;
+  max-width: 1200px;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  transition: transform 0.35s cubic-bezier(.2,.9,.2,1);
+  will-change: transform;
+}
+
+.floating-pic:hover {
+  transform: translateY(-6px);
+}
+
+/* Keep a small responsive tweak for mobile */
+@media (max-width: 1200px) {
+  .floating-pic-container {
+    flex: 1;
+    max-width: 520px;
+  }
+  .floating-pic {
+    max-width: 60vmin;
+  }
+}
+
+@media (max-width: 900px) {
+  .floating-pic-container {
+    flex: 1;
+    width: 100%;
+    max-width: 480px;
+  }
+  .floating-pic {
+    max-width: 56vmin;
+  }
+}
+
+@media (max-width: 480px) {
+  /* On small devices stack vertically */
+  .floating-pic-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+  }
+  .floating-pic {
+    max-width: 82vmin;
+  }
+}

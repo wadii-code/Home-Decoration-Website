@@ -1,20 +1,21 @@
 import express from 'express';
-import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
+import cors from 'cors';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const app = express();
+const PORT =  3001;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Supabase client (from Vercel env vars)
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
-// POST /api/orders
+// Endpoint to handle order submission
 app.post('/api/orders', async (req, res) => {
   try {
     const {
@@ -29,6 +30,7 @@ app.post('/api/orders', async (req, res) => {
       Price
     } = req.body;
 
+    // Insert order into Supabase
     const { data, error } = await supabase
       .from('Client')
       .insert([{
@@ -42,32 +44,37 @@ app.post('/api/orders', async (req, res) => {
         Quantity: parseInt(Quantity),
         Price: parseFloat(Price)
       }]);
-
+        
     if (error) {
-      return res.status(500).json({
-        success: false,
-        error: error.message
+      console.error('Error inserting order:', error);
+      return res.status(500).json({ 
+        success: false, 
+        error: error.message 
       });
     }
 
-    return res.status(201).json({
-      success: true,
-      data,
-      message: 'Order submitted successfully'
+    res.status(201).json({ 
+      success: true, 
+      data: data,
+      message: 'Order submitted successfully' 
     });
-
   } catch (err) {
-    return res.status(500).json({
-      success: false,
-      error: err.message
+    console.error('Unexpected error:', err);
+    res.status(500).json({ 
+      success: false, 
+      error: err.message 
     });
   }
 });
 
-// Health check
-app.get('/api', (req, res) => {
-  res.send('API is running');
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.send('Server is running');
 });
 
-// IMPORTANT: export app (NO listen)
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 export default app;
+export { supabase }; 

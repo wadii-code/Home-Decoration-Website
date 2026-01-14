@@ -44,7 +44,7 @@ app.post('/api/orders', async (req, res) => {
         Quantity: parseInt(Quantity),
         Price: parseFloat(Price)
       }]);
-
+        
     if (error) {
       console.error('Error inserting order:', error);
       return res.status(500).json({ 
